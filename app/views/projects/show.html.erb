@@ -1,0 +1,96 @@
+<% title "#{@project} #{@version} on #{@project.platform_name} - Libraries.io" %>
+<% description project_description(@project, @version) %>
+<% content_for :atom, auto_discovery_link_tag(:atom, rss_url(@project)) %>
+<%= content_for :meta, render_meta(@project) %>
+
+<%= render 'projects/alerts' %>
+
+<div class='row'>
+  <div class='col-md-8'>
+    <div class="row">
+      <div class='col-md-7'>
+        <h1>
+          <%= @project %>
+          <br>
+          <small class='hidden-xs'>
+            <%= @project.release_or_tag.singularize.titlecase %>
+            <% if @version %>
+              <%= @version %>
+            <% else %>
+              <%= @project.latest_release_number %>
+            <% end %>
+          </small>
+        </h1>
+      </div>
+      <div class='col-md-5 sidebar'>
+        <%= render 'projects/actions' %>
+      </div>
+    </div>
+
+    <% if @project.description.present? %>
+      <p>
+        <%= @project.description %>
+      </p>
+    <% end %>
+    <%= render 'projects/links' %>
+    <hr>
+    <%= render 'projects/details' %>
+  </div>
+  <div class='col-md-4 sidebar'>
+    <%= render 'projects/statistics' %>
+  </div>
+</div>
+<div class='row'>
+  <div class='col-md-8'>
+    <% if @repository.present? && @repository.readme.present? %>
+      <hr>
+      <h3 data-ga-tracked-el='readme'>Documentation</h3>
+      <div class='well well-large' id='readme'>
+        <%== @repository.readme %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class='col-md-4 sidebar'>
+    <%= render 'projects/releases' %>
+
+    <%= render 'projects/owners' %>
+
+    <%= render 'projects/contributors' %>
+
+    <% if @version %>
+      <div id='version_dependencies' style='display:none;' data-url="<%= version_dependencies_path(@project.to_param.merge(number: @version.number)) %>"></div>
+    <% end %>
+
+    <div id='top_dependent_repos' style='display:none;' data-url="<%= top_dependent_repos_path(@project.to_param) %>"></div>
+
+    <p>
+      <%= fa_icon 'question-circle' %>
+      Something wrong with this page?
+      <%= link_to 'Make a suggestion', project_suggestions_path(@project.to_param) %>
+    </p>
+    <p>
+      <%= fa_icon 'download' %>
+      <%= link_to 'Export .ABOUT file for this package', @version.present? ? about_version_path(@project.to_param.merge(number: @version.number)) : about_project_path(@project.to_param) %>
+    </p>
+    <p>
+      <small class='text-muted'>Last synced: <%= @project.last_synced_at || @project.created_at %></small>
+    </p>
+    <% unless @project.recently_synced? %>
+      <% if logged_in? %>
+        <p>
+          <%= link_to sync_project_path(@project.to_param), class: 'btn btn-primary btn-xs', method: :post do %>
+            <%= fa_icon 'refresh' %>
+            Resync Project
+          <% end %>
+        </p>
+      <% else %>
+        <p>
+          <small class='text-muted'>
+            <%= link_to 'Login', login_path(return_to: request.original_url) %> to resync this project
+          </small>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

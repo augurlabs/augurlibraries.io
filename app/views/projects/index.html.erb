@@ -1,0 +1,98 @@
+<div class='row'>
+  <div class="col-md-12 headline">
+    <h1>Libraries.io</h1>
+    <%= link_to 'Find out more &raquo;'.html_safe, about_path, class: 'visible-xs' %>
+
+    <%= form_tag search_path, method: :get, class: 'search-form', enforce_utf8: false do |f| %>
+      <div class="input-group input-group-lg">
+        <%= text_field_tag 'q', params[:q], placeholder: 'Search open source packages, frameworks and tools...', class: 'form-control', autofocus: true %>
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </span>
+      </div>
+      <p class='hidden-xs'>Libraries.io monitors <strong><%= number_with_delimiter(Project.fast_total) %></strong> open source packages across <strong><%= PackageManager::Base.platforms.length %></strong> different package managers, so you don't have to. <%= link_to 'Find out more', about_path %>
+      </p>
+      <hr>
+    <% end %>
+  </div>
+</div>
+<div class='row cta'>
+  <div class='col-md-3'>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title"><%= fa_icon 'binoculars' %>&nbsp;Discover new software</h2>
+      </div>
+      <div class="panel-body">
+        <p>
+          Search <%= number_to_human(Project.fast_total) %> packages by <%= link_to 'licence'.html_safe, licenses_path %>, <%= link_to 'language'.html_safe, languages_path %> or <%= link_to 'keyword'.html_safe, keywords_path %>, or explore new, trending or popular packages.
+        </p>
+      </div>
+      <div class="panel-footer"><%= link_to 'Explore', explore_path, class:'btn btn-primary center-block' %></div>
+    </div>
+  </div>
+  <div class='col-md-3'>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title"><%= fa_icon 'thumb-tack' %>&nbsp;Monitor your dependencies</h2>
+      </div>
+      <div class="panel-body">
+        <p>
+          Stay up to date with notifications of updates, licence incompatibilities or deleted dependencies.
+        </p>
+      </div>
+      <div class="panel-footer">
+        <% if logged_in? %>
+          <%= link_to 'Subscriptions', subscriptions_path, class:'btn btn-success center-block'%>
+        <% else %>
+          <%= link_to 'Login', login_path, class:'btn btn-success center-block' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-3'>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title"><%= fa_icon 'wrench' %>&nbsp;Maintain your OSS project</h2>
+      </div>
+      <div class="panel-body">
+        <p>
+          Understand your users and make informed decisions about features with usage and version data.
+        </p>
+      </div>
+      <div class="panel-footer">
+        <% if logged_in? %>
+          <%= link_to 'Repository Monitoring', repositories_path, class:'btn btn-success center-block'%>
+        <% else %>
+          <%= link_to 'Login', login_path, class:'btn btn-success center-block' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-3'>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title"><%= fa_icon 'database' %>&nbsp;Use Libraries.io data</h2>
+      </div>
+      <div class="panel-body">
+        <p>
+          Use Libraries.io data in your applications, services or research. Use our <%= link_to 'API', '/api'%> to stay up to date.
+        </p>
+      </div>
+      <div class="panel-footer"><%= link_to 'Documentation', '/data', class:'btn btn-primary center-block'%></div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+<h3 data-ga-tracked-el='search-by-language'>
+  Supported Package Managers
+</h3>
+<div class='row'>
+  <%= render partial: 'platforms/platform', collection: @platforms %>
+</div>
+<br>
+<p>
+  Package manager not listed above? <%= link_to 'Consider adding support for it', "https://github.com/librariesio/libraries.io/blob/master/docs/add-a-package-manager.md" %>.
+</p>
